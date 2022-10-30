@@ -1,3 +1,4 @@
+'''这是一个能实现遗传算法求二元最值的作业'''
 import math
 from matplotlib import pyplot as plt
 import random
