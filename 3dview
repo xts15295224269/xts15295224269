@@ -1,0 +1,105 @@
+from matplotlib import pyplot as plt
+import random
+import numpy as np
+
+from calobjValue import calobjValue
+from calfitValue import calfitValue
+from selection import selection
+from crossover import crossover
+from mutation import mutation
+from best import best
+import math
+from matplotlib import pyplot as plt
+import random
+
+from geneEncoding import geneEncoding
+def gene_Encoding(pop_size, chrom_length):
+    pop = [[]]
+    for i in range(pop_size):
+        temp = []
+        for j in range(chrom_length):
+            temp.append(random.randint(0, 1))
+        pop.append(temp)
+
+    return pop[1:]
+
+def decode_chrom(pop, chrom_length):
+    temp = []
+    for i in range(len(pop)):
+        t = 0
+        for j in range(chrom_length):
+            t += pop[i][j] * (math.pow(2, j))
+        temp.append(t)
+    return temp
+pop_size = 500		# 种群数量
+max_value = 10      # 基因中允许出现的最大值
+chrom_length = 10	# 染色体长度
+pc = 0.6			# 交配概率
+pm = 0.01           # 变异概率
+results = [[]]		# 存储每一代的最优解，N个二元组
+fit_value = []		# 个体适应度
+fit_mean = []		# 平均适应度
+pop = gene_Encoding(pop_size, chrom_length)
+
+A = []
+B = []
+Z = []
+temp1 = []
+temp2 = []
+dot = [[]]
+g = 9.8
+temp1 = decode_chrom(pop, chrom_length)
+temp2 = decode_chrom(pop, chrom_length)
+for i in range(len(temp1)):
+    x = temp1[i] * max_value / (math.pow(2, chrom_length) - 1)
+
+    y = temp2[i] * max_value / (math.pow(2, chrom_length) - 1)
+    if x <= y:
+        x = x+y + 1
+        y = y
+    a = x
+    b = y
+
+
+    z = x * y * math.sqrt(2 * g / (x * x - y * y))
+    A.append(x)
+    B.append(y)
+    Z.append(z)
+    c = z
+
+    dot.append([a,b,c])
+dot1=[[]]
+for i in range(1,len(dot),25):
+    dot1.append(dot[i])
+#print(dot)
+print(A)
+#print(dot[1:])
+for i in range(0,len(dot)-1):
+    if Z[i]>Z[i-1]:
+        Z[i] = Z[i]
+        print(Z[i], A[i], B[i])
+
+    else:
+        Z[i]=Z[i-1]
+#        print('no')
+print(dot1[1:])
+print(dot1)
+#        dot.append([Q, W, E])
+ #       print(dot)
+#print(Z[i],A[i],B[i])
+
+#print(Z[len(dot)-2])
+plt.figure()
+ax1 = plt.axes(projection='3d')
+ax1.set_xlim(25, 0)  # X轴，横向向右方向
+ax1.set_ylim(0,25)  # Y轴,左向与X,Z轴互为垂直
+ax1.set_zlim(0, 50)  # 竖向为Z轴
+color1 = ['r', 'g', 'b', 'k', 'm']
+marker1 = ['o', 'v', '1', 's', 'H']
+i = 0
+for x in dot1[1:]:
+    ax1.scatter(x[0], x[1], x[2], c=color1[i],marker=marker1[i], linewidths=0.5)  # 用散点函数画点
+
+i += 1
+
+plt.show()
